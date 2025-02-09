@@ -17,6 +17,9 @@ create table public.companies (
 	phone text,
 	email text unique not null check (email = lower(trim(email))),
 	gst_number text,
+	gst_rate decimal(5,2) default 18.00,
+	enable_discount boolean default true,
+	default_discount_rate decimal(5,2) default 5.00,
 	created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
@@ -96,13 +99,26 @@ alter table public.companies disable row level security;
 truncate table public.companies cascade;
 
 -- Insert company data with explicit email
-INSERT INTO public.companies (name, address, phone, email, gst_number, created_at)
+INSERT INTO public.companies (
+	name, 
+	address, 
+	phone, 
+	email, 
+	gst_number, 
+	gst_rate,
+	enable_discount,
+	default_discount_rate,
+	created_at
+)
 VALUES (
 	'Murali Agencies',
 	'10,Neela North Side,Nagapattinam,Tamilnadu-611001',
 	'8300101784',
 	'blackboytechie@gmail.com',
 	'f5e46fw4e44g',
+	18.00,
+	true,
+	5.00,
 	'2025-02-09 07:10:18.369504+00'
 );
 
