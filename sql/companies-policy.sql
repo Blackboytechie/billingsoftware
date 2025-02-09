@@ -18,17 +18,28 @@ alter table public.companies disable row level security;
 -- Re-enable RLS
 alter table public.companies enable row level security;
 
--- Create completely unrestricted read policy
-create policy "allow_all_reads"
+-- Create read policy for authenticated users
+create policy "allow_company_reads"
 on public.companies
 for select
-using (true);
+using (
+	id in (
+		select company_id 
+		from public.profiles 
+		where id = auth.uid()
+	)
+);
 
--- Create restricted update policy
-create policy "allow_authenticated_updates"
+-- Create restricted update policy for company owners
+create policy "allow_company_updates"
 on public.companies
 for update
-using (auth.role() = 'authenticated');
-
+using (
+	id in (
+		select company_id 
+		from public.profiles 
+		where id = auth.uid()
+	)
+);
 
 
